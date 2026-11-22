@@ -1,0 +1,8 @@
+scenario,threshold,levels,order,queries,full,minimal_supports,packages,options,fixed,K1_unrestricted,unrestricted,protected,coord_gain,protection_cost,protection_share,Lstar,Lstar_cov,Lstar_gross,Lstar_losses,unrestricted_gross,unrestricted_losses,reassigned_K1,reassigned_Lstar,n_solves,hours_Bankei,hours_Jotetsu,veh_Bankei,veh_Jotetsu
+threshold30,30,8,bitrev,832,193,193,60,112,192,193,193,193,1,0,0.0,,193,1,0,1,0,B_KOMAOKA,B_KOMAOKA,4,13.5,61.817,3,21
+threshold45,45,8,bitrev,832,333,356,60,112,326,328,328,328,2,0,0.0,,328,2,0,3,1,B_KOMAOKA,B_KOMAOKA,4,12.133,64.667,4,18
+baseline60,60,8,bitrev,832,426,490,60,112,411,415,415,411,4,4,100.0,3,413,5,3,9,5,B_KOMAOKA,B_KOMAOKA,14,12.983,63.883,3,19
+threshold75,75,8,bitrev,832,547,675,60,112,529,529,529,529,0,0,undefined,,529,0,0,0,0,,,4,10.517,64.517,2,19
+threshold90,90,8,bitrev,832,640,870,60,112,612,612,612,612,0,0,undefined,,612,0,0,0,0,,,4,10.517,64.567,2,19
+levels16,60,16,bitrev,832,426,490,100,189,411,415,415,412,4,3,75.0,2,414,5,2,7,3,B_KOMAOKA,B_KOMAOKA,14,13.5,63.367,3,19
+temporal_spacing8,60,8,maxmin,832,426,490,60,112,414,418,418,415,4,3,75.0,1,417,4,1,7,3,B_KOMAOKA,B_KOMAOKA,13,13.5,63.4,3,20

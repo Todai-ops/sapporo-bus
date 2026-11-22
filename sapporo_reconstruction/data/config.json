@@ -1,0 +1,66 @@
+{
+  "operators": {
+    "Bankei": {
+      "vehicle_cap": 4
+    },
+    "Jotetsu": {
+      "vehicle_cap": 23
+    }
+  },
+  "eligible_route_units": [
+    "B_HASSAMU",
+    "B_KOMAOKA",
+    "J_N95",
+    "J_N96",
+    "J_N97",
+    "J_N98",
+    "J_12_FUJINO"
+  ],
+  "levels": 8,
+  "offsets": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "main_offset": 0,
+  "cut_depths": [
+    0.1,
+    0.2,
+    0.3
+  ],
+  "loss_budgets": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "max_alt_optima": 25,
+  "target_gains": [
+    2,
+    4,
+    5
+  ],
+  "mip_rel_gap": 1e-09
+}

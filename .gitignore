@@ -1,0 +1,24 @@
+# Python and IDE
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+.vscode/
+.idea/
+# Generated regression outputs (original archived results are tracked separately)
+reproduced/
+revision_analysis/reproduced/
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+# OS files
+.DS_Store
+Thumbs.db

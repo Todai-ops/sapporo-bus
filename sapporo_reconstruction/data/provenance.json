@@ -1,0 +1,173 @@
+{
+  "description": "Illustrative 8-route composite reconstructed from official GTFS feeds",
+  "bus_date": "20261109",
+  "subway_date": "20200203",
+  "routes": [
+    {
+      "gtfs_route_id": "R011800001",
+      "route_unit": "B_MARUYAMA",
+      "operator": "Bankei",
+      "name": "円山線",
+      "eligible_for_reassignment": false
+    },
+    {
+      "gtfs_route_id": "R011800002",
+      "route_unit": "B_HASSAMU",
+      "operator": "Bankei",
+      "name": "発寒南・真駒内線",
+      "eligible_for_reassignment": true
+    },
+    {
+      "gtfs_route_id": "R011800836",
+      "route_unit": "B_KOMAOKA",
+      "operator": "Bankei",
+      "name": "駒岡線",
+      "eligible_for_reassignment": true
+    },
+    {
+      "gtfs_route_id": "R010800826",
+      "route_unit": "J_N95",
+      "operator": "Jotetsu",
+      "name": "南95 真駒内駅〜硬石山",
+      "eligible_for_reassignment": true
+    },
+    {
+      "gtfs_route_id": "R010800829",
+      "route_unit": "J_N96",
+      "operator": "Jotetsu",
+      "name": "南96 真駒内駅〜中の沢",
+      "eligible_for_reassignment": true
+    },
+    {
+      "gtfs_route_id": "R010800031",
+      "route_unit": "J_N97",
+      "operator": "Jotetsu",
+      "name": "南97 真駒内駅〜山水団地前",
+      "eligible_for_reassignment": true
+    },
+    {
+      "gtfs_route_id": "R010800032",
+      "route_unit": "J_N98",
+      "operator": "Jotetsu",
+      "name": "南98 真駒内駅〜道路管理事務所",
+      "eligible_for_reassignment": true
+    },
+    {
+      "gtfs_route_id": "R010800007",
+      "route_unit": "J_12_FUJINO",
+      "operator": "Jotetsu",
+      "name": "12 真駒内駅〜藤野4条11丁目",
+      "eligible_for_reassignment": true
+    }
+  ],
+  "subway_gtfs_routes": [
+    "920001",
+    "920002",
+    "920003",
+    "920004"
+  ],
+  "station_aliases": {
+    "地下鉄真駒内駅": "真駒内駅",
+    "真駒内": "真駒内駅",
+    "円山公園駅前": "円山公園駅",
+    "円山公園": "円山公園駅",
+    "地下鉄発寒南駅": "発寒南駅",
+    "発寒南": "発寒南駅",
+    "さっぽろ": "札幌駅"
+  },
+  "query_origins": [
+    "盤渓",
+    "恵開拓記念碑前",
+    "発寒南駅",
+    "ばんけいの森テニスコート",
+    "硬石山",
+    "中の沢",
+    "山水団地前",
+    "道路管理事務所",
+    "藤野４条十一丁目",
+    "真駒内駅",
+    "円山公園駅"
+  ],
+  "query_destinations": [
+    "真駒内駅",
+    "円山公園駅",
+    "大通",
+    "札幌駅",
+    "発寒南駅"
+  ],
+  "query_times": [
+    "06:00",
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00"
+  ],
+  "origin_equals_destination_excluded": true,
+  "same_name_stops_collapsed": true,
+  "walk_transfers_beyond_same_name": false,
+  "number_of_queries": 832,
+  "bus_trip_count": 253,
+  "subway_trip_count": 678,
+  "feeds": [
+    {
+      "filename": "bankei_bus.zip",
+      "source_url": "https://ckan.hoda.jp/dataset/24d1dd70-5395-4d6b-b41f-0d83e8eabdb9/resource/889906b8-eb1a-41c3-a7b3-75cd69aa891f/download/bankei_bus.zip",
+      "sha256": "6f4adb14ab0bb55d22286bc576fedcafc38d1a85e3cac9a42774cc6d0d84bf74",
+      "publisher": "ジョルダン株式会社",
+      "valid_from": "20261101",
+      "valid_to": "20270430",
+      "sample_service_date": "20261109",
+      "selected_trips": 48,
+      "selected_gtfs_route_ids": [
+        "R011800001",
+        "R011800002",
+        "R011800836"
+      ]
+    },
+    {
+      "filename": "joutetsu.zip",
+      "source_url": "https://ckan.hoda.jp/dataset/24d1dd70-5395-4d6b-b41f-0d83e8eabdb9/resource/fef98fef-6fe2-472f-bde3-9d4f0a509a4a/download/joutetsu.zip",
+      "sha256": "9085b45ddfdb6c880a06f761e224847a3acb8f4bc60050e4799e11903c4c8b15",
+      "publisher": "ジョルダン株式会社",
+      "valid_from": "20261101",
+      "valid_to": "20270430",
+      "sample_service_date": "20261109",
+      "selected_trips": 205,
+      "selected_gtfs_route_ids": [
+        "R010800007",
+        "R010800031",
+        "R010800032",
+        "R010800826",
+        "R010800829"
+      ]
+    },
+    {
+      "filename": "sapporo_subway.zip",
+      "source_url": "https://ckan.hoda.jp/dataset/24d1dd70-5395-4d6b-b41f-0d83e8eabdb9/resource/3efff7e5-b604-4850-8888-38f0e60bb238/download/gtfs_sapporo1.000.zip",
+      "sha256": "48b269845e844ec16483b8ee37de5b5fce81216417ec9906883d3d508eaabf6a",
+      "publisher": "札幌市交通局",
+      "valid_from": "20200101",
+      "valid_to": "20201231",
+      "sample_service_date": "20200203",
+      "selected_trips": 678,
+      "selected_gtfs_route_ids": [
+        "920001",
+        "920002",
+        "920003",
+        "920004"
+      ]
+    }
+  ],
+  "limitation": "The 2020 subway feed is not contemporaneous with 2026 bus schedules; this is a hypothetical composite, not a deployable operating plan. GTFS route and query selection is newly specified, not recovered from the earlier paper."
+}

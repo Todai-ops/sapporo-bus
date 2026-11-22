@@ -1,0 +1,12 @@
+{
+  "operators": {"Bankei": {"vehicle_cap": 2}, "Jotetsu": {"vehicle_cap": 2}},
+  "eligible_route_units": ["A"],
+  "levels": 2,
+  "offsets": [0, 1],
+  "main_offset": 0,
+  "cut_depths": [0.1, 0.2, 0.3],
+  "loss_budgets": [0, 1, 2, 3],
+  "max_alt_optima": 3,
+  "target_gains": [2, 5, 10],
+  "mip_rel_gap": 1e-9
+}

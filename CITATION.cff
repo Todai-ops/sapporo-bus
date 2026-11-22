@@ -1,0 +1,18 @@
+# GitHub citation metadata; no publication DOI is claimed.
+cff-version: 1.2.0
+message: "If you use these computations or data transformations, cite the associated paper and archive version."
+title: "Sapporo Bus-Service Coordination and Journey Protection: Reproducibility Materials"
+type: software
+authors:
+  - family-names: Sharma
+    given-names: Adhar
+version: "1.0-reviewer-revision"
+abstract: >-
+  Reproducible 832-query Sapporo GTFS composite, finite-package
+  mixed-integer optimization, sensitivity experiments and solver audit.
+keywords:
+  - transit accessibility
+  - timetable optimization
+  - bus service cuts
+  - GTFS
+  - reproducibility

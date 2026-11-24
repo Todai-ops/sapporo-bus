@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[english]{babel}
-\usepackage[letterpaper,top=1.9cm,bottom=2cm,left=2.3cm,right=2.3cm]{geometry}
+\usepackage[letterpaper,top=1.85cm,bottom=1.9cm,left=2.3cm,right=2.3cm]{geometry}
 \usepackage{amsmath,booktabs,graphicx,float}
 \usepackage[labelfont=bf,labelsep=period]{caption}
 \usepackage[sort,round,semicolon,authoryear]{natbib}
@@ -11,8 +11,9 @@
 \urlstyle{same}
 \emergencystretch=3em
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{5pt}
-\setlength{\bibsep}{4pt}
+\setlength{\parskip}{4pt}
+\setlength{\bibsep}{2pt}
+\renewcommand{\bibfont}{\small}
 \raggedbottom
 \clubpenalty=10000
 \widowpenalty=10000
@@ -24,84 +25,84 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Coordinating bus-service cuts may create reachable journeys while eliminating others preserved by a fixed-assignment plan. We test this trade-off in a reconstructed Sapporo timetable with 832 equally weighted origin--destination--departure-time queries. Under the primary 60-minute measure, coordination adds two, four and three reachable queries at 10\%, 20\% and 30\% revenue-hour cuts, respectively; protecting every reference query forfeits these gains. The protection cost is not general: at a 45-minute threshold, no gain is forfeited, and more detailed or differently ordered departure packages also change the trade-off. These results concern modeled query reachability, not observed passenger outcomes.
+When bus operators cut service, letting one operator take over another's route can improve access while removing journeys retained by the best fixed-operator timetable. We study this choice using 832 departure-time queries in a reconstructed Sapporo network. At a 20\% cut, reassignment raises one-hour reachability from 411 to 415: nine queries are gained and five lost. Preserving all 411 forfeits that net gain of four, whereas at a 45-minute limit the operators can preserve all 326 reference queries and add two. Equally good 415-query plans place the five losses in different communities.
 \end{abstract}
 \textit{Keywords:} bus-service cuts; accessibility; hold-harmless clause; operator coordination; timetable optimization.
 
 \section{QUESTIONS}
-Sapporo's public transport plan documents shrinking bus service and calls for inter-operator cooperation \citep{sapporoPlan2024}. Network downsizing and service-capacity sharing offer possible responses \citep{guillot2022,pantelidis2024}, but an aggregate improvement can remove access that a fixed-responsibility plan would retain.
+We compare \emph{two network-wide optimized timetables}: one retains each route's current operator, while the other permits Bankei and Jotetsu to exchange operating responsibility for selected routes. Both choose retained departures under separate operator limits; this is not a comparison with independently planned cuts. Sapporo's transport plan calls for operator cooperation amid service contraction \citep{sapporoPlan2024}, and downsizing and capacity-sharing research motivates the experiment \citep{guillot2022,pantelidis2024}.
 
-We ask how many reachable queries a zero-loss (hold-harmless) clause costs, whether small loss allowances yield no benefit, and whether permitting additional route reassignments compensates for tighter protection. We distinguish absolute lost gains from the fraction of the possible coordination benefit forfeited.
+A planner evaluating a revised, post-cut timetable might wish to promise that every origin--destination--departure-time opportunity in a selected fixed-operator plan remains reachable. We test this \emph{hypothetical} hold-harmless guarantee, not an existing Sapporo contract. How much extra access can route reassignment provide, and how much survives if none of the selected reference journeys may be lost? We also vary the allowed losses ($L$) and permitted reassignments ($K$).
 
 \section{METHODS}
-Public GTFS feeds describe three Bankei route units (48 bus trips), five Jotetsu units (205 trips), and 678 fixed subway trips \citep{bankeiGTFS,jotetsuGTFS,subwayGTFS}. Bus service is from 9 November 2026; the subway feed is from 3 February 2020. The resulting network has 135 normalized stop names, including seven explicit station aliases, with no other walking links.
+Public GTFS snapshots provide three Bankei route units (48 trips), five Jotetsu units (205 trips), and fixed subway service (678 trips) \citep{bankeiGTFS,jotetsuGTFS,subwayGTFS}. Bus service is dated 9 November 2026, subway service 3 February 2020. Reassignment keeps the same departure times, stops, terminals and turnaround assumptions; no depot or staffing costs are added.
 
-Our 832 equally weighted queries combine 11 origins, five destinations and 16 hourly start times (06:00--21:00), excluding 48 identical origin--destination pairs. A query is reachable if arrival occurs within 60 minutes \emph{including initial waiting}, with at most two bus and two subway boardings and five-minute interchanges. Full service reaches 426 queries. This cumulative-opportunity measure counts sampled possibilities, not observed journeys or unchanged travel times \citep{geurs2004,farber2014}.
+We sample 11 route-end/interchange origins, five subway/interchange destinations and 16 hourly desired departures from 06:00 to 21:00. Three origin--destination pairs have identical endpoints; removing their 48 same-origin-and-destination \emph{queries} leaves 832. For example, can a traveller leaving Nakanosawa at 10:00 reach Makomanai Station by 11:00? The 60-minute limit includes initial waiting and transfers. Queries have equal weight, rather than observed passenger counts; the destinations and hourly starts sample access across the selected corridors \citep{geurs2004,farber2014}.
 
-Each route offers eight nested departure packages, selecting $\lceil mn/8\rceil$ departures in each direction at level $m$ by deterministic bit-reversal ordering. Eight ordering offsets are tested. Revenue hours sum retained trip durations; required vehicles are the minimum within-route chains with matching terminals and five-minute turnarounds. Chain counts add across route units, without cross-unit interlining or extra deadhead. Operator-specific hour caps decrease by 10\%, 20\% or 30\%; experimental vehicle caps are four (Bankei, its full-service chain count) and 23 (Jotetsu, two below its full-service count of 25); these are not observed fleet sizes. Seven units may change operator without altering their stops or timings.
-
-A mixed-integer program jointly optimizes route packages and assignments, subject to those caps, at most $K\leq7$ reassignments and at most $L$ lost queries from a selected post-cut reference set $R$. Its $K=0$ baseline is a \emph{network-wide optimum with ownership fixed}, not separate operator planning. Define coverage $C_R(K,L)$, unrestricted gain $G=C_R(7,\infty)-C_R(0,\infty)$ and absolute protection cost $A=C_R(7,\infty)-C_R(7,0)$. Its relative cost $A/G$ is undefined when $G=0$. The first effective allowance is $L^*=\min\{L:C_R(7,L)>C_R(7,0)\}$. Protection preserves selected \emph{post-cut} reachability, not the full timetable. Data, code, query-level checks and added sensitivity tests are in the supplement.
+The model chooses which nested departure packages to retain and, when permitted, who operates each route, maximizing reachable queries. Separate revenue-hour and experimental vehicle caps apply to each operator (four Bankei, 23 Jotetsu vehicles). Within-route vehicle chaining is permitted, but not cross-route chaining. Seven units can change operator. A zero-loss rule preserves the \emph{identities} of all reachable queries in one selected \emph{post-cut} fixed-operator optimum, not all full-service journeys or their original travel times. For a given reference, ``gain'' is the difference between unrestricted and fixed-operator optimal coverage; ``cost'' is unrestricted minus zero-loss coverage. Package construction, exact inputs, selected reference IDs and code are in the supplement and \url{https://github.com/Todai-ops/sapporo-bus} \citep{sharma2026sapporoRepo}.
 
 \section{FINDINGS}
-At offset zero, unrestricted reassignment gains two, four and three queries under 10\%, 20\% and 30\% hour cuts (Table~\ref{tab:primary}). A zero-loss clause removes the entire incremental gain, but retains 419, 411 and 403 reachable queries. Its absolute cost is thus two, four or three queries, despite a 100\% forfeited \emph{share} in each case.
+Full service makes 426 of the 832 queries reachable within an hour. With a 20\% cut, a rule-based timetable serves 400, reoptimizing departures with operators fixed serves 411, and allowing reassignment serves 415 (Table~\ref{tab:primary}). Thus better fixed-operator timetabling adds 11 over the rule-based plan; changing operators adds a further \emph{four}. Protecting the particular 411-query optimum forfeits four queries, about 1\% of that reference's coverage and 100\% of the reassignment gain.
 
 \begin{table}[H]
 \centering
-\caption{Primary phase (offset zero). Outcomes are reachable queries among 832 samples; the rule-based plan is not the protected reference.}
+\caption{Primary 60-minute results, offset zero (reachable queries of 832). ``Keep reference'' preserves each query reachable under the selected post-cut fixed-operator optimum.}
 \label{tab:primary}
 \small
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}lrrrrrrr@{}}
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
-Hour cut & Rule-based & $C_R(0,\infty)$ & $C_R(7,\infty)$ & $C_R(7,0)$ & $G$ & $A$ (share) & $L^*$ \\
+Hours cut & Rule-based & Routes fixed & Routes may change & Keep reference & Extra gain & First useful $L$\\
 \midrule
-10\% & 407 & 419 & 421 & 419 & 2 & 2 (100\%) & 3\\
-20\% & 400 & 411 & 415 & 411 & 4 & 4 (100\%) & 3\\
-30\% & 393 & 403 & 406 & 403 & 3 & 3 (100\%) & 3\\
+10\% & 407 & 419 & 421 & 419 & 2 & 3\\
+20\% & 400 & 411 & 415 & 411 & 4 & 3\\
+30\% & 393 & 403 & 406 & 403 & 3 & 3\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-At the 20\% cut, protecting every one of the 411 reference queries yields no additional coverage. Allowing three losses permits the transfer of Bankei's Komaoka route unit to Jotetsu: five queries become reachable and three cease to be, producing 413. Without protection, one such transfer suffices to reach 415 (nine gained, five lost). Both operators remain within the specified hours and vehicle caps. Additional permitted transfers cannot improve these \emph{primary} optima.
+In the selected 411-query plan, Bankei runs no Komaoka departures. Allowing three losses \emph{first permits a coverage improvement}, not the first transfer: Jotetsu takes 10 Komaoka departures while reducing N96 from 24 to 18. Five queries become reachable and three are lost, yielding 413 within both operators' caps. One loss is the Nakanosawa 10:00--Makomanai journey. With five losses allowed, one reassignment reaches 415 (nine gained, five lost). Two tied 415-query plans both transfer Komaoka: one cuts N96 and loses five Nakanosawa queries, while another cuts the Fujino route and loses five Fujino queries. Their equal totals conceal different choices for communities.
 
 \begin{table}[H]
 \centering
-\caption{Sensitivity across departure-order offsets and distinct optimal fixed-owner reference query sets, using the 60-minute measure. Shares concern offsets with $G>0$.}
+\caption{Original offset and fixed-operator reference sensitivity (60-minute threshold). All-gain forfeiture is counted only where reassignment improves coverage.}
 \label{tab:phase}
 \small
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}lrrrrrr@{}}
+\begin{tabular}{@{}lrrrrr@{}}
 \toprule
-Cut & Offsets with $G>0$ & All gain forfeited & Offset share & Offset $L^*$ & Distinct references & Reference share\\
+Cut & Offsets with gain & Offsets forfeiting all & $L^*$ range & Distinct fixed references & Cost share across references\\
 \midrule
-10\% & 6/8 & 4/6 & 0--100\% & 1--3 & 4 & 100\%\\
-20\% & 7/8 & 7/7 & 100\% & 1--3 & 2 & 100\%\\
-30\% & 8/8 & 7/8 & 75--100\% & 1--8 & 5 & 66.7--100\%\\
+10\% & 6/8 & 4/6 & 1--3 & 4 & 100\%\\
+20\% & 7/8 & 7/7 & 1--3 & 2 & 100\%\\
+30\% & 8/8 & 7/8 & 1--8 & 5 & 66.7--100\%\\
 \bottomrule
 \end{tabular}}
 \end{table}
+
+At the same 20\% cut, a \emph{45-minute} criterion selects a different 326-query reference and permits two more queries with none lost; the one-hour criterion permits no extra queries under full protection (Table~\ref{tab:newtests}). At 75 and 90 minutes, reassignment offers no additional coverage. The temporal-spacing package menu has three equally good 414-query references: protecting them yields 414, 415 or 416, against 418 unrestricted. The archived reference is the middle case (75\% cost); across the three, the cost is 50--100\%.
 
 \begin{table}[H]
 \centering
-\caption{Additional 20\%-cut sensitivity, offset zero. Each row selects its own optimal fixed-owner reference; a dash denotes no effective relaxation threshold.}
+\caption{20\%-cut sensitivity. Temporal spacing reports the \emph{archived} reference (protected 415; cost share 75\%); across three optimal references protection yields 414--416 (cost 50--100\%). Cost share is undefined with no reassignment gain.}
 \label{tab:newtests}
 \small
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}lrrrrrr@{}}
+\begin{tabular}{@{}lrrrrr@{}}
 \toprule
-Arrival bound/package menu & Fixed & Unrestricted & Zero-loss & Gain & Cost (share) & $L^*$\\
+Time limit/package choice & Routes fixed & Routes may change & Keep reference & Extra gain & Cost share\\
 \midrule
-45 min, 8 levels & 326 & 328 & 328 & 2 & 0 (0\%) & --\\
-60 min, 8 levels & 411 & 415 & 411 & 4 & 4 (100\%) & 3\\
-75 min, 8 levels & 529 & 529 & 529 & 0 & 0 (n/a) & --\\
-90 min, 8 levels & 612 & 612 & 612 & 0 & 0 (n/a) & --\\
-60 min, 16 levels & 411 & 415 & 412 & 4 & 3 (75\%) & 2\\
-60 min, temporal-spacing order & 414 & 418 & 415 & 4 & 3 (75\%) & 1\\
+45 min, 8 levels & 326 & 328 & 328 & 2 & 0\%\\
+60 min, 8 levels & 411 & 415 & 411 & 4 & 100\%\\
+75 min, 8 levels & 529 & 529 & 529 & 0 & n/a\\
+90 min, 8 levels & 612 & 612 & 612 & 0 & n/a\\
+60 min, 16 levels & 411 & 415 & 412 & 4 & 75\%\\
+60 min, temporal spacing & 414 & 418 & 415 & 4 & 75\%\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-Sensitivity is substantive (Tables~\ref{tab:phase}--\ref{tab:newtests}): the three-loss threshold and full forfeiture do not survive all threshold and package changes. The mismatched feed years, modeled operator interchangeability, artificial caps and sparse unweighted queries preclude citywide welfare conclusions. Hold-harmless terms should therefore specify the protected reference, travel-time criterion and permitted losses, and be tested against alternative feasible timetables.
+The value of reassignment depends on the journey definition, retained departures and \emph{which} optimal reference is promised. The mixed-year feeds, stylized vehicle caps and unweighted query sample limit application. A practical agreement should identify the actual reference timetable and disclose where access is gained or lost, not just compare aggregate totals.
 
 \bibliographystyle{plainnat}
 \bibliography{references}

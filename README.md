@@ -48,7 +48,7 @@ python reproduce.py --full
 ```
 
 - `--quick` verifies the archived source hashes, rebuilds the study dataset, runs synthetic algorithm tests and reconstructs the 20% worked example.
-- `--full` also replays the original experiment and 830-call ledger, repeats the seven sensitivity experiments, and checks replayed output tables against the frozen CSVs. Expected duration depends on machine and solver.
+- `--full` also replays the original experiment, logs the machine-specific number of solver calls (830 in the archived run; 809 in the reported Apple Silicon replay), reruns the seven sensitivity experiments using frozen reference sets, and compares invariant optimal values and archived schedules separately. See `revision_analysis/REPLAY_GUIDE.md`. Expected duration depends on machine and solver.
 - You can run individual scripts from the project root: `python revised/hold_harmless.py --data sapporo_reconstruction/data --out reproduced/main` and `python revision_analysis/run_sensitivity.py`.
 
 > `PYTHONHASHSEED=0` is set by `reproduce.py` for subprocesses to make ordering deterministic. If manually running Python scripts, set that environment variable yourself.

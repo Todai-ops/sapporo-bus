@@ -13,10 +13,10 @@
 \newcommand{\st}[1]{\texttt{\footnotesize #1}}
 \title{Supporting Information and Computational Reproduction\\\large The Accessibility Cost of Protecting Journeys in Coordinated Bus-Service Cuts}
 \author{Adhar Sharma\\The University of Tokyo}
-\date{20 November 2026}
+\date{22 November 2026}
 \begin{document}
 \maketitle
-\textbf{Scope and verification.} The original 7 November 2026 GTFS-based computational archive was retrieved and rerun on 20 November 2026 using its pinned Python dependencies. Recovered files include source GTFS ZIPs, provenance, all 832 query records, code, and original outputs. The present supplement adds an independently summed resource audit, exact changed-query lists, a complete 830-call replay ledger, and new threshold/package experiments. The study is illustrative, not an observed passenger-impact or implementable staffing estimate.
+\textbf{Scope and verification.} The original 7 November 2026 GTFS-based computational archive was retrieved and rerun on 20 November 2026 using its pinned Python dependencies. Recovered files include source GTFS ZIPs, provenance, all 832 query records, code, and original outputs. The present supplement adds an independently summed resource audit, exact changed-query lists, a complete 830-call replay ledger, and new threshold/package experiments. The study is illustrative, not an observed passenger-impact or implementable staffing estimate. The complete code and archived inputs are available at \url{https://github.com/Todai-ops/sapporo-bus}.
 
 \section*{S1. Source files, routes and query construction}
 The input archive is \st{Sapporo\_Journey\_Protection\_Reproducible\_Study.zip}. Both bus GTFS feeds were sampled for Monday 9 November 2026; subway GTFS was sampled for Monday 3 February 2020. The historical mismatch remains a major limitation. Feed snapshots and source SHA-256 hashes are included; exact download locations and validity ranges appear in \st{sapporo\_reconstruction/data/provenance.json}. The downloads are from the Hokkaido GTFS open-data distribution.
@@ -47,7 +47,7 @@ The units permitted to change operator are B\_HASSAMU, B\_KOMAOKA, J\_N95, J\_N9
 
 Seven explicit station aliases are applied before collapsing all exact matching stop names: \st{地下鉄真駒内駅} and \st{真駒内} to \st{真駒内駅}; \st{円山公園駅前} and \st{円山公園} to \st{円山公園駅}; \st{地下鉄発寒南駅} and \st{発寒南} to \st{発寒南駅}; and \st{さっぽろ} to \st{札幌駅}. This produces 135 normalized stop names; it does \emph{not} imply 135 manually curated aliases. No other walking transfers are introduced.
 
-Queries are the Cartesian product of 11 selected origins, five destinations and the 16 start times 06:00--21:00, excluding 48 equal origin--destination cases: $11\cdot5\cdot16-48=832$. The query IDs in \st{queries.csv} are 1-indexed in file order. An itinerary's deadline is the query departure time plus the stated threshold, so \emph{initial waiting is included}. At most two bus and two subway boardings are allowed, with a five-minute post-alighting interchange margin. Under the 60-minute bound, all included service makes 426 queries reachable; 490 minimal bus-trip support sets are enumerated. These are hypothetical, equally weighted queries, not observed journeys; feasibility may survive even when travel times worsen substantially.
+Queries are the Cartesian product of 11 selected origins, five destinations and the 16 start times 06:00--21:00, excluding three origin--destination pairs with equal endpoints at each of 16 sampled start times: $11\cdot5\cdot16-3\cdot16=832$. The 48 exclusions are \emph{queries}, not 48 distinct origin--destination pairs. The query IDs in \st{queries.csv} are 1-indexed in file order. An itinerary's deadline is the query departure time plus the stated threshold, so \emph{initial waiting is included}. At most two bus and two subway boardings are allowed, with a five-minute post-alighting interchange margin. Under the 60-minute bound, all included service makes 426 queries reachable; 490 minimal bus-trip support sets are enumerated. These are hypothetical, equally weighted queries, not observed journeys; feasibility may survive even when travel times worsen substantially.
 
 \section*{S2. Exact package and resource rules}
 The original package generator groups departures within each route unit by ordered origin and destination terminal names, then sorts each group by actual departure time (stable tie ordering by input trip IDs). For a direction with $n$ departures, set $b=\max(1,\lceil\log_2 n\rceil)$ and $N=2^b$. For offset $o\in\{0,\dots,7\}$, departure index $i\in\{0,\dots,n-1\}$ receives sorting key $\operatorname{bitreverse}_b((i+o)\bmod N)$. Package $m=1,\ldots,8$ takes the first $\lceil mn/8\rceil$ ranked departures \emph{in each direction}; equal resulting trip sets are deduplicated, retaining the smallest level. Withdrawal remains possible by choosing no package. At offset zero there are 60 distinct packages, yielding 112 route-package-owner choices.
@@ -62,7 +62,7 @@ Let $x_{rpa}\in\{0,1\}$ choose retained package $p$ of route $r$ assigned to ope
 \]
 For every bus trip $t$ required by minimal support $i$, $w_{qi}\le\sum_{r,p,a:\,t\in p}x_{rpa}$, while $y_q\le\sum_i w_{qi}$. Always-reachable bus-free queries contribute a constant to the objective. The model maximizes $\sum_q y_q$ subject to $\sum_{q\in R}(1-y_q)\le L$ for a fixed \emph{selected query identity set} $R$ reachable by the reference. A cut is applied to operator-specific full-service hours while vehicle caps stay fixed.
 
-The main reference is the \emph{first certified solution} returned by the $K=0$ network-wide optimization (no changes of ownership, but common objective across routes). It is not a non-cooperative Nash equilibrium or separate operator optimization. A rule-based reference is separately defined by uniform level thinning per original operator, followed by greedy upgrades in descending route-size order; this is \emph{not} the reference for the primary hold-harmless comparisons. Additional distinct optimal fixed-owner reference sets were enumerated using no-good cuts (four, two and five at offset zero for cuts 10, 20 and 30\%). An allowance of zero preserves all queries in the chosen post-cut reference, \emph{not} every query served before reductions.
+The archived main reference is the \emph{selected certified solution} of the $K=0$ network-wide optimization (fixed ownership, common objective across routes). Its exact query IDs and route/package choices are frozen in \st{revision\_analysis/frozen\_primary\_references.json} (all three primary cuts), and the 20\% example is separately frozen in \st{worked\_example\_20pct.json}. Fresh solvers may select other equally optimal schedules. It is not a non-cooperative Nash equilibrium or separate operator optimization. A rule-based reference is separately defined by uniform level thinning per original operator, followed by greedy upgrades in descending route-size order; this is \emph{not} the reference for the primary hold-harmless comparisons. Additional distinct optimal fixed-owner reference sets were enumerated using no-good cuts (four, two and five at offset zero for cuts 10, 20 and 30\%). An allowance of zero preserves all queries in the chosen post-cut reference, \emph{not} every query served before reductions.
 
 For transparency, using each \emph{rule-based} plan as a separate protected reference instead of the selected optimized plan produces the following results at offset zero. This is not the comparison used for the main estimand:
 \begin{center}\small
@@ -100,6 +100,19 @@ $K=1,L=\infty$ & 13.500 & 63.367 & 3 & 19\\
 \bottomrule\end{tabular}
 \end{center}
 At $L=3$, the Komaoka route contributes 10 trips under Jotetsu; J\_N96 falls from 24 to 18 trips. At unrestricted $K=1$, Komaoka contributes 14 Jotetsu trips, J\_N96 falls from 24 to 12 trips, and J\_N98 increases from 38 to 42 trips. Other package adjustments are recorded in \st{worked\_example\_resources.csv}. Choosing a larger cap $K=7$ at unrestricted $L$ produces a tied 415-query optimum with three transfers; that \emph{does not} contradict the existence of a one-transfer optimum.
+
+\subsection*{Two different optimal 415-query outcomes}
+The archived 20\% fixed-owner reference has no B\_KOMAOKA trips. Two solutions both permit exactly one reassignment and each reach 415: both gain nine and lose five of the \emph{same archived 411 reference queries}. They transfer B\_KOMAOKA to Jotetsu but cut different Jotetsu route packages, putting all losses at different origin nodes. Their total coverage is an equal certified global optimum, not a unique service choice.
+\begin{center}\small
+\begin{tabular}{@{}lrrrrp{3.2cm}@{}}\toprule
+Plan & Komaoka & N96 & Fujino line 12 & N98 & Location of five losses \\\midrule
+Fixed-owner reference & 0 & 24 & 25 & 38 & None (reference) \\
+Three-loss solution & 10 & 18 & 25 & 38 & Three losses at Nakanosawa \\
+415 solution A (unrestricted $K=1$) & 14 & 12 & 25 & 42 & Five losses at Nakanosawa \\
+415 solution B ($K=1,L=5$) & 14 & 24 & 13 & 42 & Five losses at Fujino \\\bottomrule
+\end{tabular}
+\end{center}
+The plans also have identical \emph{sets} of nine gained queries (seven at 恵開拓記念碑前 and two at 道路管理事務所). Solution A's five losses are at 中の沢, and solution B's five losses are at 藤野４条十一丁目, with their exact query IDs/times preserved in the JSON archive. The caps are 14.213 Bankei revenue hours/4 vehicles and 64.733 Jotetsu hours/23 vehicles. Solution A uses 13.500/3 and 63.367/19, respectively; solution B uses 13.500/3 and 64.433/18. Both are feasible. In particular, Nakanosawa at 10:00 to Makomanai Station within an hour is reference query ID 389 and is lost under solution A and the three-loss plan; Fujino losses under solution B include the 08:00 and 17:00 Makomanai queries and three 17:00 transfer destinations.
 
 \subsection*{The exact affected queries}
 The table lists the queries with changed reachability relative to the selected 411-query reference. IDs correspond to their order in \st{queries.csv}; complete CSV output is also supplied.
@@ -146,13 +159,25 @@ Threshold/menu & Full & Fixed & Unrestricted & Protected & $A/G$ & $L^*$\\\midru
 60 min, temporal spacing & 426 & 414 & 418 & 415 & 75\% & 1\\
 \bottomrule\end{tabular}
 \end{center}
+\subsection*{Identity sensitivity within the temporal-spacing package menu}
+The temporal-spacing row's published protected total 415 is conditional on the \emph{archived} fixed-owner reference set of 414 queries. Exhaustive enumeration of the six optimal package-selection solutions yielded three distinct 414-query reachability sets (each certified feasible under fixed ownership). Holding each set fixed gives:
+\begin{center}\small
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Reference set & Reference coverage & Zero-loss coverage & Unrestricted & Cost (share) \\\midrule
+Archived (set A) & 414 & 415 & 418 & 3 (75\%) \\
+Alternative set B & 414 & 416 & 418 & 2 (50\%) \\
+Alternative set C & 414 & 414 & 418 & 4 (100\%) \\\bottomrule
+\end{tabular}
+\end{center}
+The archived A and alternative B sets differ by exactly one query in each direction: A includes ID 634, whereas B includes ID 467. Therefore both references serve 414 queries, yet they protect different promised opportunities. Each reference's complete IDs and selected package/operator list is in \st{revision\_analysis/temporal\_reference\_sets\_frozen.json}; \st{scripts/frozen\_validation.py} independently reconstructs them and resolves the corresponding zero-loss model. For this design, protection costs \emph{2--4 queries, or 50--100\%} of the four-query coordination gain. The 75\% displayed in the paper refers only to set A.
+
 The unrestricted coordination gain is respectively 1, 2, 4, 0, 0, 4 and 4 in the seven scenarios. When the unrestricted and fully protected optima coincide, no positive further allowance threshold is defined. For the 75- and 90-minute cases the coordination gain is zero, so the forfeited \emph{fraction} is undefined. These controlled checks demonstrate that the main full-forfeiture conclusion is sensitive to threshold and package menu, without validating another city's operating policy. The complete output and package/solution selections are saved in \st{new\_sensitivity\_results.csv} and \st{new\_sensitivity\_results.json}.
 
 \section*{S6. Original phase and alternative-reference sensitivity}
 The original eight offsets yield positive unrestricted gains in 6/8, 7/8 and 8/8 cases at 10\%, 20\% and 30\% cuts. Among positive-gain offsets, zero-loss protection forfeits the entire gain in 4/6, 7/7 and 7/8; $L^*$ ranges are 1--3, 1--3 and 1--8, respectively. Among distinct optimal fixed-owner reference sets at offset zero, forfeited shares are 100\%, 100\% and 66.7--100\%, respectively. The exact selected-reference reachability set is an explicit input to the clause: optimizing the same number of accessible queries does not necessarily protect the same opportunities. Phase-level and reference-level rows are in \st{metrics.csv}, \st{references.csv}, and \st{coverage.csv} inside the original archive.
 
-\section*{S7. Reconciliation of 830 solver calls and diagnostics}
-A complete replay of the original \st{revised/hold\_harmless.py} on the archived data emitted \textbf{830 actual SciPy/HiGHS MILP calls}; all 830 returned status 0 (optimal), with largest reported relative MIP gap $4.372\times10^{-13}$. The main phase uses the full $K=0,\ldots,7$ by $L=0,\ldots,20,\infty$ reporting surface for the selected reference; sensitivity phases and alternative references solve only $K=0$ and $K=7$ with selected loss caps, plus exact binary searches for first-improvement thresholds. Duplicate coverage points are cached or copied once their unrestricted solution already satisfies the allowance. Additional calls enumerate alternative optimal fixed-owner schedules using no-good cuts. Therefore the text's nominal full factorial $8\times3\times8\times22=4,224$ is \emph{not} the executed solve grid, nor was it intended to be.
+\section*{S7. Archived solver-call count and cross-platform reproducibility}
+The \emph{archived} November 7 run made \textbf{830 actual SciPy/HiGHS MILP calls}, all recorded with optimal status; a same-environment replay also produced 830, with largest reported relative MIP gap $4.372\times10^{-13}$. An independent Apple Silicon/Python 3.12.13 replay at commit \st{3b45036} made \emph{809} optimal calls with identical input hashes and rebuilt query data. The 830 value describes the archived execution, not a cross-platform invariant. The initial offset uses full $K$--$L$ reporting surfaces; the remaining cases use a reduced set of $K,L$ settings, exact allowance searches, caching, and no-good cuts to explore alternative optima. Consequently, the nominal $8\times3\times8\times22=4,224$ grid is not the number of executed solver calls.
 
 \begin{center}\small
 \begin{tabular}{@{}lrrrr@{}}\toprule
@@ -162,7 +187,7 @@ Offsets one--seven & 129 & 165 & 172 & 466\\
 All executed calls & 247 & 264 & 319 & 830\\
 \bottomrule\end{tabular}
 \end{center}
-The four core primary scenarios at each cut (selected optimized reference, unrestricted coordination, zero-loss protection, and the $L=3$ first-improvement check) all returned solver status 0 with matching objective and dual bound, as confirmed in the replay ledger:
+The four core primary scenarios at each cut (selected optimized reference, unrestricted coordination, zero-loss protection, and the $L=3$ first-improvement check) had the following archived optimal coverage counts:
 \begin{center}\small
 \begin{tabular}{@{}lrrrr@{}}\toprule
 Hour cut & $K=0$ & $K=7,L=\infty$ & $K=7,L=0$ & $K=7,L=3$ \\\midrule
@@ -173,16 +198,14 @@ Hour cut & $K=0$ & $K=7,L=\infty$ & $K=7,L=0$ & $K=7,L=3$ \\\midrule
 \end{center}
 The ledger contains the raw minimization objective and lower bound (which exclude constant bus-free query coverage) for these and every other solve. 
 
-The complete \st{solver\_run\_ledger.csv} records the order, offset, cut, $K$, $L$, reference identity group, number of no-good cuts, solver status, incumbent, dual bound, MIP gap and explored nodes for each call. \st{solver\_run\_counts.csv} aggregates by phase and cut. Objective counts agree with the submitted \st{coverage.csv} summary. The replay was run using NumPy 2.3.5, SciPy 1.17.0, Matplotlib 3.10.8 and the specified gap tolerance $10^{-9}$. Two synthetic regression tests in \st{revised/test\_hold\_harmless.py} pass; the main worked example was also reconstructed by direct ref-set difference and independent schedule arithmetic. These optimality diagnostics certify the \emph{finite} model, not a globally optimal unconstrained real timetable.
+The complete \st{solver\_run\_ledger.csv} records the archived order, scenario, reference-identity group, solver status, objective, dual bound, gap and nodes; \st{solver\_run\_counts.csv} aggregates counts. The new cross-platform script \st{scripts/compare\_outputs.py} compares \emph{unconditional optimal objective totals} and sensitivity totals computed against \emph{frozen reference identities}, rather than requiring byte-identical tied schedules or equal call counts. For example, the reviewer's replay matched the archived 421-query optimum at row 27 of \st{coverage.csv}, but gained six and lost four queries rather than the archived five and three. Those are equally optimal net gains relative to the same-sized reference, not evidence of an incorrect maximum. If a result concerns \emph{which} queries change, \st{scripts/frozen\_validation.py} reconstructs the archived specific package/owner selections and independently checks their query identities, hours and vehicles; it also checks solver optimality separately. The original pinned environment was NumPy 2.3.5, SciPy 1.17.0, Matplotlib 3.10.8, with a requested relative MIP gap of $10^{-9}$. These certificates concern the declared finite model, not an unrestricted real timetable.
 
 \section*{S8. Availability, interpretation, and caveats}
-The accompanying reviewer reproducibility archive includes all three feed ZIPs, feed checksum and validity metadata, the eight route filters and seven permissible transfers, seven explicit stop aliases, 832 queries, the package generator and reachability implementation, the MILP, original coverage and reference result CSVs, new query-level/resource audits, all 830 solver-call records and new sensitivity scripts and results. From the supplied package root run:
+The reproducibility repository (\url{https://github.com/Todai-ops/sapporo-bus}) includes all three feed ZIPs, feed checksum and validity metadata, the eight route filters and seven permissible transfers, seven explicit stop aliases, 832 queries, the package generator and reachability implementation, the MILP, original coverage and reference result CSVs, new query-level/resource audits, all 830 solver-call records and new sensitivity scripts and results. From the supplied package root run:
 \begin{verbatim}
 python -m pip install -r requirements.txt
-python gtfs_sources/build_study_dataset.py
-PYTHONHASHSEED=0 python revised/hold_harmless.py \
-  --data sapporo_reconstruction/data --out reproduced
-python -m unittest discover -s revised -p 'test_*.py' -v
+python reproduce.py --quick
+python reproduce.py --full
 \end{verbatim}
 Reassignment assumes an operator can accept another operator's route unchanged, including terminals and turnaround, without garage positioning or contract effects. Vehicle limits are stylized and revenue hours omit deadhead and staff duties. Bus and subway service dates differ by six years; query sites are selected, stop matching is by normalized name, and no pedestrian links, riders, journey purposes, weights, fares, capacity or delays are represented. Accordingly, these are scenario-comparison results for a finite synthetic reconstruction, not an estimate of population served or policy-ready service instructions.
 \end{document}

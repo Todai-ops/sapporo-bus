@@ -25,6 +25,7 @@ def main():
     run(py,ROOT/'gtfs_sources'/'build_study_dataset.py')
     run(py,'-m','unittest','discover','-s','revised','-p','test_*.py','-v')
     run(py,ROOT/'revision_analysis'/'recover_evidence.py')
+    run(py,ROOT/'scripts'/'frozen_validation.py')
     if args.full:
         run(py,ROOT/'revised'/'hold_harmless.py','--data',ROOT/'sapporo_reconstruction'/'data','--out',ROOT/'reproduced'/'main')
         run(py,ROOT/'revision_analysis'/'run_sensitivity.py')
